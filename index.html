@@ -21,6 +21,15 @@
       margin-top: 20px;
       font-weight: bold;
     }
+    pre {
+      background: #eee;
+      padding: 10px;
+      text-align: left;
+      max-width: 600px;
+      margin: 20px auto;
+      font-size: 14px;
+      overflow-x: auto;
+    }
   </style>
 </head>
 <body>
@@ -29,6 +38,7 @@
   <button onclick="buyTokens()">Купить LTG</button>
   <button onclick="sellTokens()">Продать LTG</button>
   <div id="status"></div>
+  <pre id="debug"></pre>
 
   <script>
     const tokenAddress = "0x3d51A25996fdc8a059A1aAafD7E12b6F15365793";
@@ -38,7 +48,7 @@
 
     async function addTokenToMetaMask() {
       try {
-        const wasAdded = await window.ethereum.request({
+        const result = await window.ethereum.request({
           method: 'wallet_watchAsset',
           params: {
             type: 'ERC20',
@@ -50,10 +60,12 @@
             }
           }
         });
-        document.getElementById('status').textContent = wasAdded ? "LTG добавлен в MetaMask" : "Операция отменена";
+        document.getElementById('status').textContent = result ? "LTG добавлен в MetaMask" : "Операция отменена";
+        document.getElementById('debug').textContent = JSON.stringify(result, null, 2);
       } catch (error) {
-        console.error(error);
         document.getElementById('status').textContent = "Ошибка при добавлении токена";
+        document.getElementById('debug').textContent = error.message || JSON.stringify(error, null, 2);
+        console.error(error);
       }
     }
 
@@ -70,9 +82,11 @@
       try {
         const receipt = await signer.sendTransaction(tx);
         document.getElementById('status').textContent = `Транзакция отправлена: ${receipt.hash}`;
+        document.getElementById('debug').textContent = JSON.stringify(receipt, null, 2);
       } catch (err) {
-        console.error(err);
         document.getElementById('status').textContent = "Ошибка покупки токенов";
+        document.getElementById('debug').textContent = err.message || JSON.stringify(err, null, 2);
+        console.error(err);
       }
     }
 
