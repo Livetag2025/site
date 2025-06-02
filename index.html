@@ -2,8 +2,40 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Add LTG to MetaMask</title>
+  <title>Livetag Token Interface</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Livetag Token (LTG)</h1>
+  <button onclick="addTokenToMetaMask()">Добавить LTG в MetaMask</button>
+  <button onclick="buyTokens()">Купить LTG</button>
+  <button onclick="sellTokens()">Продать LTG</button>
+  <div id="status"></div>
+
   <script>
+    const tokenAddress = "0x3d51A25996fdc8a059A1aAafD7E12b6F15365793";
+    const saleAddress = "0x6A9F88bF5396beDD230Dff31e72E43ea1f789357";
+    const tokenDecimals = 0;
+    const tokenSymbol = "LTG";
+
     async function addTokenToMetaMask() {
       try {
         const wasAdded = await window.ethereum.request({
@@ -11,41 +43,42 @@
           params: {
             type: 'ERC20',
             options: {
-              address: '0x3d51A25996fdc8a059A1aAafD7E12b6F15365793', // твой LTG
-              symbol: 'LTG',
-              decimals: 0,
-              image: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0000000000000000000000000000000000000000/logo.png' // при желании замени
+              address: tokenAddress,
+              symbol: tokenSymbol,
+              decimals: tokenDecimals,
+              image: ''
             }
           }
         });
-
-        if (wasAdded) {
-          alert('LTG добавлен в MetaMask');
-        } else {
-          alert('Операция отменена');
-        }
+        document.getElementById('status').textContent = wasAdded ? "LTG добавлен в MetaMask" : "Операция отменена";
       } catch (error) {
         console.error(error);
-        alert('Ошибка при добавлении токена');
+        document.getElementById('status').textContent = "Ошибка при добавлении токена";
       }
     }
+
+    async function buyTokens() {
+      if (!window.ethereum) return alert("MetaMask не найден");
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+
+      const tx = {
+        to: saleAddress,
+        value: ethers.parseEther("0.01") // минимальная сумма
+      };
+
+      try {
+        const receipt = await signer.sendTransaction(tx);
+        document.getElementById('status').textContent = `Транзакция отправлена: ${receipt.hash}`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').textContent = "Ошибка покупки токенов";
+      }
+    }
+
+    async function sellTokens() {
+      alert("Функция продажи будет реализована позже");
+    }
   </script>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 100px;
-    }
-    button {
-      font-size: 16px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <h1>Добавить LTG в MetaMask</h1>
-  <button onclick="addTokenToMetaMask()">Добавить LTG</button>
 </body>
 </html>
