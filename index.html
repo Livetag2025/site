@@ -1,1 +1,51 @@
-<hello world>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Add LTG to MetaMask</title>
+  <script>
+    async function addTokenToMetaMask() {
+      try {
+        const wasAdded = await window.ethereum.request({
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              address: '0x3d51A25996fdc8a059A1aAafD7E12b6F15365793', // твой LTG
+              symbol: 'LTG',
+              decimals: 0,
+              image: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0000000000000000000000000000000000000000/logo.png' // при желании замени
+            }
+          }
+        });
+
+        if (wasAdded) {
+          alert('LTG добавлен в MetaMask');
+        } else {
+          alert('Операция отменена');
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Ошибка при добавлении токена');
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+    button {
+      font-size: 16px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Добавить LTG в MetaMask</h1>
+  <button onclick="addTokenToMetaMask()">Добавить LTG</button>
+</body>
+</html>
