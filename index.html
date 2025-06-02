@@ -47,6 +47,10 @@
     const tokenSymbol = "LTG";
 
     async function addTokenToMetaMask() {
+      if (!window.ethereum) {
+        document.getElementById('status').textContent = "MetaMask не найден";
+        return;
+      }
       try {
         const result = await window.ethereum.request({
           method: 'wallet_watchAsset',
@@ -55,7 +59,7 @@
             options: {
               address: tokenAddress,
               symbol: tokenSymbol,
-              decimals: tokenDecimals,
+              decimals: 0,
               image: ''
             }
           }
@@ -76,7 +80,7 @@
 
       const tx = {
         to: saleAddress,
-        value: ethers.parseEther("0.01") // минимальная сумма
+        value: ethers.parseEther("0.01")
       };
 
       try {
