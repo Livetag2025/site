@@ -1,102 +1,55 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Livetag Token Interface</title>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@6.6.2/dist/ethers.umd.min.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 50px;
-    }
-    button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    #status {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    pre {
-      background: #eee;
-      padding: 10px;
-      text-align: left;
-      max-width: 600px;
-      margin: 20px auto;
-      font-size: 14px;
-      overflow-x: auto;
-    }
-  </style>
-</head>
-<body>
-  <h1>Livetag Token (LTG)</h1>
-  <button onclick="addTokenToMetaMask()">Добавить LTG в MetaMask</button>
-  <button onclick="buyTokens()">Купить LTG</button>
-  <button onclick="sellTokens()">Продать LTG</button>
-  <div id="status"></div>
-  <pre id="debug"></pre>
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
 
-  <script>
-    const tokenAddress = "0x3d51A25996fdc8a059A1aAafD7E12b6F15365793";
-    const saleAddress = "0x6A9F88bF5396beDD230Dff31e72E43ea1f789357";
-    const tokenDecimals = 0;
-    const tokenSymbol = "LTG";
+export default function TokenLandingPage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6">
+      <header className="text-center py-12">
+        <h1 className="text-4xl md:text-6xl font-bold mb-4">LiveTag Token (LTG)</h1>
+        <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto">
+          Цифровой актив нового поколения для поддержки проектов, контента и децентрализованных приложений.
+        </p>
+      </header>
 
-    async function addTokenToMetaMask() {
-      if (!window.ethereum) {
-        document.getElementById('status').textContent = "MetaMask не найден";
-        return;
-      }
-      try {
-        const result = await window.ethereum.request({
-          method: 'wallet_watchAsset',
-          params: {
-            type: 'ERC20',
-            options: {
-              address: tokenAddress,
-              symbol: tokenSymbol,
-              decimals: 0,
-              image: ''
-            }
-          }
-        });
-        document.getElementById('status').textContent = result ? "LTG добавлен в MetaMask" : "Операция отменена";
-        document.getElementById('debug').textContent = JSON.stringify(result, null, 2);
-      } catch (error) {
-        document.getElementById('status').textContent = "Ошибка при добавлении токена";
-        document.getElementById('debug').textContent = error.message || JSON.stringify(error, null, 2);
-        console.error(error);
-      }
-    }
+      <section className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto py-12">
+        <Card className="bg-slate-700 border-slate-600">
+          <CardContent className="p-6">
+            <h2 className="text-2xl font-semibold mb-2">💡 Миссия</h2>
+            <p className="text-slate-300">
+              LTG создан для поддержки цифровых инициатив и сообществ, позволяя пользователям легко взаимодействовать и инвестировать в Web3 проекты.
+            </p>
+          </CardContent>
+        </Card>
 
-    async function buyTokens() {
-      if (!window.ethereum) return alert("MetaMask не найден");
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
+        <Card className="bg-slate-700 border-slate-600">
+          <CardContent className="p-6">
+            <h2 className="text-2xl font-semibold mb-2">🚀 Особенности</h2>
+            <ul className="text-slate-300 space-y-1">
+              <li className="flex items-start"><CheckCircle className="mr-2 text-green-400" />ERC-20 совместимость</li>
+              <li className="flex items-start"><CheckCircle className="mr-2 text-green-400" />Простое добавление в MetaMask и Trust Wallet</li>
+              <li className="flex items-start"><CheckCircle className="mr-2 text-green-400" />Участие в продаже и распределении</li>
+            </ul>
+          </CardContent>
+        </Card>
 
-      const tx = {
-        to: saleAddress,
-        value: ethers.parseEther("0.01")
-      };
+        <Card className="bg-slate-700 border-slate-600">
+          <CardContent className="p-6">
+            <h2 className="text-2xl font-semibold mb-2">🔗 Контракты</h2>
+            <p className="text-slate-300 text-sm">
+              Token: <span className="break-all">0x3d51A25996fdc8a059A1aAafD7E12b6F15365793</span><br />
+              Sale: <span className="break-all">0x6A9F88bF5396beDD230Dff31e72E43ea1f789357</span>
+            </p>
+          </CardContent>
+        </Card>
+      </section>
 
-      try {
-        const receipt = await signer.sendTransaction(tx);
-        document.getElementById('status').textContent = `Транзакция отправлена: ${receipt.hash}`;
-        document.getElementById('debug').textContent = JSON.stringify(receipt, null, 2);
-      } catch (err) {
-        document.getElementById('status').textContent = "Ошибка покупки токенов";
-        document.getElementById('debug').textContent = err.message || JSON.stringify(err, null, 2);
-        console.error(err);
-      }
-    }
-
-    async function sellTokens() {
-      alert("Функция продажи будет реализована позже");
-    }
-  </script>
-</body>
-</html>
+      <div className="text-center py-10">
+        <Button className="text-lg px-6 py-3 rounded-2xl shadow-md hover:bg-green-500 transition-all duration-200">
+          Добавить LTG в кошелёк
+        </Button>
+      </div>
+    </div>
+  );
+}
